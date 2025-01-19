@@ -1,0 +1,11 @@
+/* Main stylesheet */
+:root {
+    --bg-main: #fffff;
+    --white: #ffffff;
+}
+
+
+body{
+    background-color: var(--bg-main);
+    padding: 4rem;
+}
