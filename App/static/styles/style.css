@@ -1,11 +1,39 @@
 /* Main stylesheet */
 :root {
-    --bg-main: #fffff;
+    --main-dark: #1A1C29;
+    --secondary-dark: #1C1E2B;
+    --bg-main: #292D3E;
     --white: #ffffff;
 }
 
 
-body{
+html, body{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+h1{
+    margin: 0;
+    padding-top: 2rem;
+}
+
+.main-container{
     background-color: var(--bg-main);
-    padding: 4rem;
+    color: var(--white);
+    width: auto;
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 2rem;
+}
+
+#graph-nav-domain{
+    background-color: var(--white);
+    color: var(--main-dark);
+    margin-top: 2rem;
+    padding: 2rem;
+    margin: 4rem;
+    border-radius: 10px;
+
+    min-height: 70vh;
 }
