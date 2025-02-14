@@ -30,10 +30,30 @@ h1{
 #graph-nav-domain{
     background-color: var(--white);
     color: var(--main-dark);
-    margin-top: 2rem;
     padding: 2rem;
-    margin: 4rem;
     border-radius: 10px;
 
-    min-height: 70vh;
+    margin: 1rem 4rem 2rem 4rem;
+
+    min-height: 50vh;
+
+    overflow: hidden;
+}
+
+svg{
+    min-height: 600px;
+}
+
+#controller, #graph-controller{
+    margin: 1rem;
+    padding: 1rem;
+}
+#controller{
+    background-color: aquamarine;
+}
+#controller button{
+    width: 100px;
+}
+#graph-controller{
+    background-color: red;
 }

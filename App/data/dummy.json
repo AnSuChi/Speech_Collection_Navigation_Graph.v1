@@ -1,0 +1,61 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "title": "Food as medicine",
+            "Speaker": "Eva Nordman",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 1,
+            "title": "The advantages of AI",
+            "Speaker": "Brad Smitt",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 2,
+            "title": "Why are modern people so depressed?",
+            "Speaker": "Saint Martino",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 3,
+            "title": "Using AI to detect cancer",
+            "Speaker": "Eva Nordman",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 4,
+            "title": "Funny economics",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        }
+    ],
+    "lines": [
+        {
+            "source": 0,
+            "target": 3,
+            "weight": 0.3
+        },
+        {
+            "source": 1,
+            "target": 3,
+            "weight": 0.6
+        },
+        {
+            "source": 0,
+            "target": 0,
+            "weight": 0
+        },
+        {
+            "source": 0,
+            "target": 0,
+            "weight": 0
+        },
+        {
+            "source": 0,
+            "target": 0,
+            "weight": 0
+        }
+    ]
+}

@@ -1,17 +1,28 @@
 {% extends "base.html" %}
-{% block title %} Home {% endblock title %}
+{% block title %} Graph-Based Navigation in TedTalks Collection {% endblock title %}
 
 {% block body %}  
     <div style="text-align: center;">
         <h1>Graph-Based Navigation in TedTalks Speech Collection</h1>
+        <br>
+        <div style="display: flex; max-width: 600px; margin: auto;">
+            <div id="graph-controller">
+                <button>Reset graph</button>
+                <button>Zoom in</button>
+                <button>Zoom out</button>
+            </div>
+            <div id="controller">
+                <button>Select random node</button>
+                <br>
+                <button>Up</button>
+                <button>Right</button>
+                <button>Down</button>
+                <button>Left</button>
+            </div>
+        </div>
     </div>
     <div id="graph-nav-domain">
-        <div id="test-output">
-            {{ testContent }} <br>
-            {{ test2 }} <br><br>
-
-                        
-        </div>
+        <svg width="100%" height="100%"></svg>
     </div>
     
 {% endblock body %}
