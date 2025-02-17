@@ -113,7 +113,7 @@ function dragEnd(event, data, simulation) {
 //
 function selectedNode(event, data) {
     // reset all nodes
-    d3.selectAll("g")
+    d3.selectAll("g").attr("data-selected", null)
         .select("circle")
         .transition().duration(300)
         .attr("r", 70)
@@ -126,7 +126,7 @@ function selectedNode(event, data) {
 
 
     // effects for the clicked node
-    d3.select(event.currentTarget)
+    d3.select(event.currentTarget).attr("data-selected", "true")
         .select("circle")
         .transition().duration(300)
         .attr("r", 150)
@@ -158,8 +158,10 @@ function selectRandomNode() {
 };
 
 
-
 // functions for graph traversal
+function selectNearestNodeUp() {
+    
+};
 
 
 // !-- graph event listeners --!
