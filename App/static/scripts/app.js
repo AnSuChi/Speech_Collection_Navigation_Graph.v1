@@ -36,7 +36,7 @@ async function loadGraph() {
 
     const simulation = d3.forceSimulation(data.nodes)
         .force("link", d3.forceLink(data.lines)
-            .id(d => d.id) // convert numeric ids to references
+            .id(data => data.id) // convert numeric ids to references
             .distance(450)
         )
         .force("charge", d3.forceManyBody().strength(-100)) // force nodes to repel each other
@@ -56,9 +56,9 @@ async function loadGraph() {
         .enter()
         .append("g")
         .call(d3.drag()
-            .on("start", (event, d) => dragStart(event, d, simulation))
-            .on("drag", (event, d) => dragged(event, d))
-            .on("end", (event, d) => dragEnd(event, d, simulation))
+            .on("start", (event, data) => dragStart(event, data, simulation))
+            .on("drag", (event, data) => dragged(event, data))
+            .on("end", (event, data) => dragEnd(event, data, simulation))
         );
 
     nodes.append("circle")
@@ -68,7 +68,7 @@ async function loadGraph() {
         .attr("stroke-width", 2);
 
     nodes.append("text")
-        .text(d => d.title.length > 20 ? d.title.slice(0, 20) + "..." : d.title)
+        .text(data => data.title.length > 20 ? data.title.slice(0, 20) + "..." : data.title)
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em")
         .attr("fill", "white")
@@ -78,65 +78,98 @@ async function loadGraph() {
     // updates node and link positions on each simulation tick
     simulation.on("tick", () => {
         links
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+            .attr("x1", data => data.source.x)
+            .attr("y1", data => data.source.y)
+            .attr("x2", data => data.target.x)
+            .attr("y2", data => data.target.y);
 
-        nodes.attr("transform", d => `translate(${d.x},${d.y})`);
+        nodes.attr("transform", data => `translate(${data.x},${data.y})`);
     });
 
-    // event listeners
+    // event listeners for nodes
     nodes.on("click", selectedNode);
 };
 
 
 // !-- drag functions --!
-function dragStart(event, d, simulation) {
+function dragStart(event, data, simulation) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
+    data.fx = data.x;
+    data.fy = data.y;
 };
 
-function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
+function dragged(event, data) {
+    data.fx = event.x;
+    data.fy = event.y;
 };
 
-function dragEnd(event, d, simulation) {
+function dragEnd(event, data, simulation) {
     if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
+    data.fx = null;
+    data.fy = null;
 };
 
 
 //
-function selectedNode(event, d) {
-    console.log("Selected node", d);
-
+function selectedNode(event, data) {
     // reset all nodes
-    d3.selectAll("g").select("circle")
+    d3.selectAll("g")
+        .select("circle")
         .transition().duration(300)
         .attr("r", 70)
         .attr("fill", "#292D3E");
 
     d3.selectAll("g").select("text")
-        .text(d => d.title.length > 20 ? d.title.slice(0, 20) + "..." : d.title)
+        .text(data => data.title.length > 20 ? data.title.slice(0, 20) + "..." : data.title)
         .transition().duration(300)
         .attr("font-size", "12px");
 
+
     // effects for the clicked node
-    d3.select(event.currentTarget).select("circle")
+    d3.select(event.currentTarget)
+        .select("circle")
         .transition().duration(300)
         .attr("r", 150)
         .attr("fill", "#093CA0");
 
     d3.select(event.currentTarget).select("text")
-        .text(d.title)
+        .text(data.title)
         .transition().duration(300)
         .attr("font-size", "14px");
+
+    return event.currentTarget;
+};
+
+function selectRandomNode() {
+    console.log("Random node selected");
+
+    const nodes = d3.selectAll("g").nodes(); 
+    if (nodes.length === 0) return; 
+
+    let randomNode;
+    let data;
+
+    do {
+        let randomIndex = Math.floor(Math.random() * nodes.length);
+        randomNode = d3.select(nodes[randomIndex]); // select random node
+        data = randomNode.datum(); // node data
+
+        console.log("Trying node:", randomNode.node(), "with data:", data);
+
+    } while (!data);
+
+    // call selectedNode
+    selectedNode({ currentTarget: randomNode.node() }, data);
 };
 
 
-// !-- load the graph --!
+
+// functions for graph traversal
+
+
+// !-- graph event listeners --!
 document.addEventListener("DOMContentLoaded", loadGraph);
+
+document.getElementById("selectRandNode-btn").addEventListener("click", () => {
+    selectRandomNode();
+});
