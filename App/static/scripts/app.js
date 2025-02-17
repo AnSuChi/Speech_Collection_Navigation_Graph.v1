@@ -13,11 +13,11 @@ async function fetchData() {
 };
 
 
+
 async function loadGraph() {
     const data = await fetchData();
     if (!data) return;
 
-    
     // container dimensions
     const container = document.getElementById("graph-nav-domain");
     let width = container.clientWidth;
@@ -39,7 +39,7 @@ async function loadGraph() {
             .id(d => d.id) // convert numeric ids to references
             .distance(250)
         )
-        .force("charge", d3.forceManyBody().strength(-50)) // force nodes to repel each other
+        .force("charge", d3.forceManyBody().strength(-100)) // force nodes to repel each other
         .force("center", d3.forceCenter(width / 2, height / 2)) // forces nodes toward the center
         .force("collide", d3.forceCollide(100)); // prevents the overlap of nodes 
 
@@ -85,6 +85,9 @@ async function loadGraph() {
 
         nodes.attr("transform", d => `translate(${d.x},${d.y})`);
     });
+
+    // event listener for node clicks
+    nodes.on("click", selectedNode);
 };
 
 // drag functions
@@ -107,9 +110,26 @@ function dragEnd(event, d, simulation) {
 
 document.addEventListener("DOMContentLoaded", loadGraph);
 
-function focusNode() {
-    console.log("Focus node");
+function selectedNode(event, d) {
+    console.log("Selected node", d);
 
-    // TODO: animate/expand the clicked node
+    // reset all nodes
+    d3.selectAll("g").select("circle")
+        .transition().duration(300)
+        .attr("r", 70)
+        .attr("fill", "#292D3E");
 
+    d3.selectAll("g").select("text")
+        .transition().duration(300)
+        .attr("font-size", "12px");
+
+    // effects for the clicked node
+    d3.select(event.currentTarget).select("circle")
+        .transition().duration(300)
+        .attr("r", 150)
+        .attr("fill", "#093CA0");
+
+    d3.select(event.currentTarget).select("text")
+        .transition().duration(300)
+        .attr("font-size", "14px");
 };
