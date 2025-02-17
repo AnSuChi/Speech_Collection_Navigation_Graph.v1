@@ -181,7 +181,7 @@ function selectNearestNode(direction) {
     let [selectedNode, nodeData] = getSelectedNode() || []; // || [] --> fallback mechanism
     if (!selectedNode) return;
 
-    let { x: currentX, y: currentY } = nodeData;
+    let { x: currentX, y: currentY } = nodeData; // extract x and y values from nodeData object & assign them to currentX and currentY
 
     // get all nodes
     let nodes = d3.selectAll("g").nodes()
