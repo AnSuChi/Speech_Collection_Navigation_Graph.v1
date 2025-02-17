@@ -87,7 +87,7 @@ async function loadGraph() {
     });
 
     // event listeners for nodes
-    nodes.on("click", selectedNode);
+    nodes.on("click", selectNode);
 };
 
 
@@ -110,8 +110,7 @@ function dragEnd(event, data, simulation) {
 };
 
 
-//
-function selectedNode(event, data) {
+function selectNode(event, data) {
     // reset all nodes
     d3.selectAll("g").attr("data-selected", null)
         .select("circle")
@@ -154,14 +153,65 @@ function selectRandomNode() {
     } while (!data);
 
     // call selectedNode
-    selectedNode({ currentTarget: randomNode.node() }, data);
+    selectNode({ currentTarget: randomNode.node() }, data);
+};
+
+// returns an array containing currently selected node and its data: [selectedNode, data]
+function getSelectedNode() {
+    let selectedNode = d3.select("g[data-selected='true']");
+    if (selectedNode.empty()) return;
+
+    let data = selectedNode.datum();
+
+    return [selectedNode, data];
+};
+
+// removes data-selected attribute
+function unselectNode(node) {
+    node.attr("data-selected", null);
+};
+// adds data-selected attribute
+function setSelectedNode(node) {
+    d3.select(node.element).attr("data-selected", "true");
 };
 
 
-// functions for graph traversal
-function selectNearestNodeUp() {
-    
-};
+// function for graph traversal
+function selectNearestNode(direction) {
+    let [selectedNode, nodeData] = getSelectedNode() || []; // || [] --> fallback mechanism
+    if (!selectedNode) return;
+
+    let { x: currentX, y: currentY } = nodeData;
+
+    // get all nodes
+    let nodes = d3.selectAll("g").nodes()
+        .map(node => ({
+            element: node,
+            data: d3.select(node).datum()
+        }))
+        .filter(node => node.data);
+    if (nodes.length === 0) return;
+
+    // direction filtering
+    let filteredNodes = nodes.filter(node => {
+        if (direction === "up") return node.data.y < currentY;
+        if (direction === "down") return node.data.y > currentY;
+        if (direction === "left") return node.data.x < currentX;
+        if (direction === "right") return node.data.x > currentX;
+    });
+    if (filteredNodes.length === 0) return;
+
+    // finding the node with the shortest Euclidean distance to the current node
+    let nearestNode = filteredNodes.reduce((prev, curr) => {
+        let prevDist = Math.sqrt(Math.pow(prev.data.x - currentX, 2) + Math.pow(prev.data.y - currentY, 2));
+        let currDist = Math.sqrt(Math.pow(curr.data.x - currentX, 2) + Math.pow(curr.data.y - currentY, 2));
+        return currDist < prevDist ? curr : prev;
+    });
+
+    unselectNode(selectedNode);
+    setSelectedNode(nearestNode.element);
+    selectNode({ currentTarget: nearestNode.element }, nearestNode.data);
+}
 
 
 // !-- graph event listeners --!
@@ -169,4 +219,20 @@ document.addEventListener("DOMContentLoaded", loadGraph);
 
 document.getElementById("selectRandNode-btn").addEventListener("click", () => {
     selectRandomNode();
+});
+
+document.getElementById("selectNearestNodeUp-btn").addEventListener("click", () => {
+    selectNearestNode("up");
+});
+
+document.getElementById("selectNearestNodeDown-btn").addEventListener("click", () => {
+    selectNearestNode("down");
+});
+
+document.getElementById("selectNearestNodeRight-btn").addEventListener("click", () => {
+    selectNearestNode("right");
+});
+
+document.getElementById("selectNearestNodeLeft-btn").addEventListener("click", () => {
+    selectNearestNode("left");
 });
