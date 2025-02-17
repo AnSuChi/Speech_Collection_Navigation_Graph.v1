@@ -141,8 +141,6 @@ function selectedNode(event, data) {
 };
 
 function selectRandomNode() {
-    console.log("Random node selected");
-
     const nodes = d3.selectAll("g").nodes(); 
     if (nodes.length === 0) return; 
 
@@ -153,9 +151,6 @@ function selectRandomNode() {
         let randomIndex = Math.floor(Math.random() * nodes.length);
         randomNode = d3.select(nodes[randomIndex]); // select random node
         data = randomNode.datum(); // node data
-
-        console.log("Trying node:", randomNode.node(), "with data:", data);
-
     } while (!data);
 
     // call selectedNode
