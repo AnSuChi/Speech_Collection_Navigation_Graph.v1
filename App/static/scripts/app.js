@@ -1,6 +1,6 @@
 // Cache reset --> cmd+shift+R
 
-// fetch JSON data (nodes & links)
+// !-- fetch JSON data (nodes & links --!
 async function fetchData() {
     try {
         const response = await fetch("/data/dummy.json");
@@ -13,7 +13,7 @@ async function fetchData() {
 };
 
 
-
+// !-- create the graph --!
 async function loadGraph() {
     const data = await fetchData();
     if (!data) return;
@@ -37,11 +37,11 @@ async function loadGraph() {
     const simulation = d3.forceSimulation(data.nodes)
         .force("link", d3.forceLink(data.lines)
             .id(d => d.id) // convert numeric ids to references
-            .distance(250)
+            .distance(450)
         )
         .force("charge", d3.forceManyBody().strength(-100)) // force nodes to repel each other
         .force("center", d3.forceCenter(width / 2, height / 2)) // forces nodes toward the center
-        .force("collide", d3.forceCollide(100)); // prevents the overlap of nodes 
+        .force("collide", d3.forceCollide(150)); // prevents the overlap of nodes 
 
     const links = zoomContainer.selectAll("line")
         .data(data.lines)
@@ -86,11 +86,12 @@ async function loadGraph() {
         nodes.attr("transform", d => `translate(${d.x},${d.y})`);
     });
 
-    // event listener for node clicks
+    // event listeners
     nodes.on("click", selectedNode);
 };
 
-// drag functions
+
+// !-- drag functions --!
 function dragStart(event, d, simulation) {
     if (!event.active) simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
@@ -108,8 +109,8 @@ function dragEnd(event, d, simulation) {
     d.fy = null;
 };
 
-document.addEventListener("DOMContentLoaded", loadGraph);
 
+//
 function selectedNode(event, d) {
     console.log("Selected node", d);
 
@@ -120,6 +121,7 @@ function selectedNode(event, d) {
         .attr("fill", "#292D3E");
 
     d3.selectAll("g").select("text")
+        .text(d => d.title.length > 20 ? d.title.slice(0, 20) + "..." : d.title)
         .transition().duration(300)
         .attr("font-size", "12px");
 
@@ -130,6 +132,11 @@ function selectedNode(event, d) {
         .attr("fill", "#093CA0");
 
     d3.select(event.currentTarget).select("text")
+        .text(d.title)
         .transition().duration(300)
         .attr("font-size", "14px");
 };
+
+
+// !-- load the graph --!
+document.addEventListener("DOMContentLoaded", loadGraph);
