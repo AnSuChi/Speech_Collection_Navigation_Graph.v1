@@ -211,7 +211,7 @@ function selectNearestNode(direction) {
     unselectNode(selectedNode);
     setSelectedNode(nearestNode.element);
     selectNode({ currentTarget: nearestNode.element }, nearestNode.data);
-}
+};
 
 
 // !-- graph event listeners --!
