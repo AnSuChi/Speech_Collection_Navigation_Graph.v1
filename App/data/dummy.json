@@ -2,31 +2,67 @@
     "nodes": [
         {
             "id": 0,
-            "title": "Food as medicine",
+            "title": "A",
             "Speaker": "Eva Nordman",
             "audioUri": "dummyUri"
         },
         {
             "id": 1,
-            "title": "The advantages of AI",
+            "title": "B",
             "Speaker": "Brad Smitt",
             "audioUri": "dummyUri"
         },
         {
             "id": 2,
-            "title": "Why are modern people so depressed?",
+            "title": "C",
             "Speaker": "Saint Martino",
             "audioUri": "dummyUri"
         },
         {
             "id": 3,
-            "title": "Using AI to detect cancer",
+            "title": "D",
             "Speaker": "Eva Nordman",
             "audioUri": "dummyUri"
         },
         {
             "id": 4,
-            "title": "Funny economics",
+            "title": "E",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 5,
+            "title": "F",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 6,
+            "title": "G",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 7,
+            "title": "H",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 8,
+            "title": "I",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 9,
+            "title": "J",
+            "Speaker": "Neil Drammen",
+            "audioUri": "dummyUri"
+        },
+        {
+            "id": 10,
+            "title": "K",
             "Speaker": "Neil Drammen",
             "audioUri": "dummyUri"
         }
@@ -43,18 +79,47 @@
             "weight": 0.6
         },
         {
-            "source": 0,
-            "target": 0,
+            "source": 10,
+            "target": 2,
             "weight": 0
         },
         {
-            "source": 0,
-            "target": 0,
+            "source": 1,
+            "target": 8,
             "weight": 0
         },
         {
-            "source": 0,
-            "target": 0,
+            "source": 1,
+            "target": 1,
+            "weight": 0
+        },
+        {
+            "source": 8,
+            "target": 10,
+            "weight": 0
+        },
+        {
+            "source": 2,
+            "target": 8,
+            "weight": 0
+        },
+        {
+            "source": 2,
+            "target": 5,
+            "weight": 0
+        },
+        {
+            "source": 9,
+            "target": 1,
+            "weight": 0
+        },        {
+            "source": 2,
+            "target": 3,
+            "weight": 0
+        },
+        {
+            "source": 2,
+            "target": 10,
             "weight": 0
         }
     ]

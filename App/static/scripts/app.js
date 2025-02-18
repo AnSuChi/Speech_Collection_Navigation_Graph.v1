@@ -30,7 +30,7 @@ async function loadGraph() {
     // zooming & panning
     const zoomContainer = svg.append("g");
     svg.call(d3.zoom()
-        .scaleExtent([0.5, 5]) // zoom limits (min% - max%)
+        .scaleExtent([0.1, 5]) // zoom limits (min% - max%)
         .on("zoom", (event) => zoomContainer.attr("transform", event.transform)) 
     );
 
@@ -129,7 +129,7 @@ function selectNode(event, data) {
         .select("circle")
         .transition().duration(300)
         .attr("r", 150)
-        .attr("fill", "#093CA0");
+        .attr("fill", "#291ce5");
 
     d3.select(event.currentTarget).select("text")
         .text(data.title)
@@ -202,11 +202,27 @@ function selectNearestNode(direction) {
     if (filteredNodes.length === 0) return;
 
     // finding the node with the shortest Euclidean distance to the current node
-    let nearestNode = filteredNodes.reduce((prev, curr) => {
-        let prevDist = Math.sqrt(Math.pow(prev.data.x - currentX, 2) + Math.pow(prev.data.y - currentY, 2));
-        let currDist = Math.sqrt(Math.pow(curr.data.x - currentX, 2) + Math.pow(curr.data.y - currentY, 2));
-        return currDist < prevDist ? curr : prev;
-    });
+    //let nearestNode = filteredNodes.reduce((prev, curr) => {
+        //let prevDist = Math.sqrt(Math.pow(prev.data.x - currentX, 2) + Math.pow(prev.data.y - currentY, 2));
+        //let currDist = Math.sqrt(Math.pow(curr.data.x - currentX, 2) + Math.pow(curr.data.y - currentY, 2));
+        //return currDist < prevDist ? curr : prev;
+    //});
+
+    let nearestNode = filteredNodes.sort((a, b) => {
+        if (direction === "right" || direction === "left") {
+            let aAxisDist = Math.abs(a.data.y - currentY);
+            let bAxisDist = Math.abs(b.data.y - currentY);
+            if (aAxisDist !== bAxisDist) return aAxisDist - bAxisDist; // prioritize closest to y-axis
+
+            return Math.abs(a.data.x - currentX) - Math.abs(b.data.x - currentX);
+        } 
+        else {
+            let aAxisDist = Math.abs(a.data.x - currentX);
+            let bAxisDist = Math.abs(b.data.x - currentX);
+            if (aAxisDist !== bAxisDist) return aAxisDist - bAxisDist; // prioritize closest to x-axis
+            return Math.abs(a.data.y - currentY) - Math.abs(b.data.y - currentY);
+        };
+    })[0];
 
     unselectNode(selectedNode);
     setSelectedNode(nearestNode.element);
