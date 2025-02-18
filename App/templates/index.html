@@ -7,22 +7,26 @@
         <br>
         <div style="display: flex; max-width: 600px; margin: auto;">
             <div id="graph-controller">
+                <h3>Graph settings</h3>
                 <button>Reset graph</button>
                 <button>Zoom in</button>
                 <button>Zoom out</button>
             </div>
             <div id="controller">
-                <button id="selectRandNode-btn">Select random node</button>
-                <br>
-                <button id="selectNearestNodeUp-btn">Up</button>
-                <button id="selectNearestNodeRight-btn">Right</button>
-                <button id="selectNearestNodeDown-btn">Down</button>
-                <button id="selectNearestNodeLeft-btn">Left</button>
+                <h3>Explore</h3>
+                <button id="selectRandNode-btn">Select random node</button> <br>
+                <div class="traversalBtns-container">
+                    <button id="selectNearestNodeUp-btn">U</button>
+                    <button id="selectNearestNodeRight-btn">R</button>
+                    <button id="selectNearestNodeDown-btn">D</button>
+                    <button id="selectNearestNodeLeft-btn">L</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="graph-nav-domain">
-        <svg width="100%" height="100%"></svg>
+
+        <div id="graph-nav-domain">
+            <svg width="100%" height="100%"></svg>
+        </div>
     </div>
     
 {% endblock body %}
