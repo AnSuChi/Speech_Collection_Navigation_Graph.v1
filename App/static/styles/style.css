@@ -8,88 +8,135 @@
 }
 
 
-html, body{
+html, body {
     padding: 0;
     margin: 0;
     height: 100%;
 }
 
-h1{
+h1, h2, h3, p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+h1 {
     margin: 0;
     padding-top: 2rem;
 }
 
-.main-container{
+.main-container {
     background-color: var(--main-dark);
     color: var(--white);
     width: auto;
     height: auto;
     min-height: 100%;
-    padding-bottom: 2rem;
 }
 
-#graph-nav-domain{
+#graph-nav-domain {
     background-color: var(--white);
     color: var(--main-dark);
 
-    margin: 2rem 0rem 2rem 0rem;
-    min-height: 80vh;
+    margin: 2rem 0rem 0rem 0rem;
+    min-height: 70vh;
     width: 100%;
 }
-#node-details-container{
-    background-color: brown; 
-    min-height: 80vh;
+#node-details-container {
+    background-color: var(--bg-main); 
+    min-height: 70vh;
     width: 450px;
-    margin: 2rem 2rem 2rem 0rem;
+    margin: 2rem 0rem 0rem 0rem;
 }
 
-svg{
-    min-height: 600px;
-}
-
-#controller, #graph-controller{
+#graph-controller, #main-traversal-controller {
     margin: 1rem;
     padding: 1rem;
 }
-#controller{
-    background-color: #291ce5;
+#main-traversal-controller {
     display: flex;
     flex-direction: row;
 }
-
-#graph-controller{
-    background-color: red;
+#main-traversal-controller h3, #graph-controller h3 {
+    margin: 0 0 1rem 0;
+}
+#main-traversal-controller, #graph-controller {
+    border: #6767f5 solid 2px;
+    background-color: #292D3E;
+    box-shadow: rgba(255, 255, 255, 0.5) 0px 1px 4px;
+}
+#main-traversal-controller .traversalBtns-container {
+    padding-left: 2rem;
 }
 
-.traversalBtns-container{
+#graph-controller {
+
+}
+#graph-controller, #main-traversal-controller {
+    border-radius: 20px;
+}
+
+.traversalBtns-container {
     display: grid;
     grid-template-columns: auto auto auto;
     grid-template-rows: auto auto auto;
     margin: auto;
-    padding-left: 4rem;
 }
-.traversalBtns-container button{
+.traversalBtns-container button {
     height: 2.5rem;
     width: 2.5rem;
-    margin: auto;
+    margin: 0;
+    padding: 0;
 
     border-radius: 100%;
 }
 
+.traversalBtns-container button svg {
+    width: 2rem;
+    height: 2rem;
+    fill: var(--main-dark);
+}
+
 /* traversal buttons positioning */
-#selectNearestNodeUp-btn {
+.NodeUp-btn {
     grid-column: 2;
     grid-row: 1;
 }
-#selectNearestNodeRight-btn {
+.NodeRight-btn {
     grid-column: 3;
     grid-row: 2;
 }
-#selectNearestNodeDown-btn {
+.NodeDown-btn {
     grid-column: 2;
     grid-row: 3;
 }
-#selectNearestNodeLeft-btn {
+.NodeLeft-btn {
     grid-column: 1;
     grid-row: 2;
+}
+/* precise styling for the svgs inside the graph traversal buttons */
+.NodeRight-btn svg {
+    margin-left: 0.25rem;
+    margin-top: 0.125rem;
+}
+.NodeDown-btn svg {
+    margin-top: 0.25rem;
+}
+.NodeLeft-btn svg {
+    margin-right: 0.25rem;
+    margin-top: 0.125rem;
+}
+
+
+#secondary-traversal-controller {
+    background-color: #6767f5;
+    position: relative;
+    top: 50%;
+}
+#secondary-traversal-controller .traversalBtns-container {
+    max-width: 120px;
+}
+#node-info-container {
+    position: relative;
+    top: 20%;
+}
+#node-speaker {
+    margin: 2rem 0rem 2rem 0rem;
 }

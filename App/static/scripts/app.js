@@ -20,12 +20,13 @@ async function loadGraph() {
 
     // container dimensions
     const container = document.getElementById("graph-nav-domain");
-    let width = container.clientWidth;
-    let height = container.clientHeight;
+    let width = Math.floor(container.clientWidth);
+    let height = Math.floor(container.clientHeight);
 
     const svg = d3.select("#graph-nav-domain svg")
                 .attr("width", width)
-                .attr("height", height);
+                .attr("height", height)
+                .style("display", "block");
 
     // zooming & panning
     const zoomContainer = svg.append("g");
@@ -136,6 +137,9 @@ function selectNode(event, data) {
         .transition().duration(300)
         .attr("font-size", "14px");
 
+    // display title and speaker in the sidebar
+    updateNodeSidebar(data);
+
     return event.currentTarget;
 };
 
@@ -173,6 +177,14 @@ function unselectNode(node) {
 // adds data-selected attribute
 function setSelectedNode(node) {
     d3.select(node.element).attr("data-selected", "true");
+};
+
+function updateNodeSidebar(data) {
+    let titleElement = document.getElementById("node-title");
+    let speakerElement = document.getElementById("node-speaker");
+
+    titleElement.innerText = `${data.title}`;
+    speakerElement.innerText = `By: ${data.speaker}`;
 };
 
 
