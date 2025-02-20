@@ -96,7 +96,7 @@
         {
             "source": 8,
             "target": 10,
-            "weight": 0.999
+            "weight": 1
         },
         {
             "source": 2,

@@ -49,7 +49,7 @@ async function loadGraph() {
         .enter()
         .append("line")
         .attr("stroke", "black")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", data => data.weight * 10);
         
     // create node groups (node + text)
     const nodes = zoomContainer.selectAll("g")
