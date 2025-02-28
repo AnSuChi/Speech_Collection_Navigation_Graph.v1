@@ -1,22 +1,28 @@
 // Cache reset --> cmd+shift+R
 
 // !-- fetch JSON data (nodes & links --!
-async function fetchData() {
+async function fetchJsonData() {
     try {
         const response = await fetch("/data/dummy.json");
-        const data = await response.json();
-        return data;
+        return await response.json();
     }
     catch(error) {
-        console.error("Could not fetch JSON data: ", error);
+        console.error("Could not fetch JSON data");
+        return null;
     }  
+};
+
+async function getAllData() {
+    const data = await fetchJsonData();
+    if (!data) return null;
+
+    return data;
 };
 
 
 // !-- create the graph --!
 async function loadGraph() {
-    const data = await fetchData();
-    if (!data) return;
+    const data = await getAllData();
 
     // container dimensions
     const container = document.getElementById("graph-nav-domain");
@@ -111,6 +117,7 @@ function dragEnd(event, data, simulation) {
 };
 
 
+// !-- select functions --!
 function selectNode(event, data) {
     // reset all nodes
     d3.selectAll("g").attr("data-selected", null)
@@ -178,16 +185,6 @@ function unselectNode(node) {
 function setSelectedNode(node) {
     d3.select(node.element).attr("data-selected", "true");
 };
-
-function updateNodeSidebar(data) {
-    let titleElement = document.getElementById("node-title");
-    let speakerElement = document.getElementById("node-speaker");
-
-    titleElement.innerText = `${data.title}`;
-    speakerElement.innerText = `By: ${data.speaker}`;
-};
-
-
 // function for graph traversal
 function selectNearestNode(direction) {
     let [selectedNode, nodeData] = getSelectedNode() || []; // || [] --> fallback mechanism
@@ -242,6 +239,52 @@ function selectNearestNode(direction) {
 };
 
 
+// !-- update UI components --!
+function updateNodeSidebar(data) {
+    let titleElement = document.getElementById("node-title");
+    let speakerElement = document.getElementById("node-speaker");
+
+    titleElement.innerText = `${data.title}`;
+    speakerElement.innerText = `By: ${data.speaker}`;
+};
+
+
+async function getConnectedNodesList(nodeData, listLimit) {
+    let data = await getAllData();
+    if (!data) return [];
+
+    // TODO 1 - OK: sort array by largest value first
+    // TODO 2 - OK: limit array to a size of 5, since only top 5 are relevant
+    // TODO 3 - OK: if none of the connected lines have a wight >= 0.5, then accept weight under 0.5 with the largest value again being first (sort)
+    let connectedNodesList = data.lines.filter(line => 
+        line.source == nodeData.id || line.target == nodeData.id
+    );
+    connectedNodesList.sort((a, b) => b.weight - a.weight); // sort, descending order
+
+    // Strong connections: mostly interested in connections with weight/similarity >= 0.5, hence:
+    let strongConnections = connectedNodesList.filter(line => line.weight >= 0.5);
+    // list limit: return list w/ "top x" elements IF there are "strong connections" present (weight >= 0.5)
+    if (strongConnections.length > 0) {
+        return strongConnections.slice(0, listLimit); // list limit: we want "top x" connections
+    };
+
+    // Weak connections: IF there are no strong connections, return the "top x" weaker ones
+    let weakConnections = connectedNodesList.filter(line => line.weight < 0.5);
+    console.log(weakConnections);
+    return weakConnections.slice(0, listLimit);
+};
+
+function navigateSimilarNodes(selectedNodeData, connectedNodesList){
+    // TODOs:
+    // 1. take selectedNode and connectedNodeList
+    // 2. highlight the line/edge between current selectedNode and the potential "next" node, found in the connectedNodesList
+    // keep track of the previously "nexted" node, every time user clicks "Next" button, the functions moves to the next entry in the connectedNodesList (don't want to force the user to go to next automatically, rather let them choose)
+
+    console.log("Navigating...");
+    console.log(connectedNodesList);
+};
+
+
 // !-- graph event listeners --!
 document.addEventListener("DOMContentLoaded", loadGraph);
 
@@ -263,4 +306,21 @@ document.getElementById("selectNearestNodeRight-btn").addEventListener("click", 
 
 document.getElementById("selectNearestNodeLeft-btn").addEventListener("click", () => {
     selectNearestNode("left");
+});
+
+document.getElementById("next-node-btn").addEventListener("click", async () => {
+     // user clicks "next button" which activates a function, the function should:
+    // TODOs:
+    // 1. get the current selected node (element & data)
+    // 2. get the relevant list using the getConnectedNodesList() function and pass the data to navigateSimilarNodes() function
+    let [selectedNodeElement, nodeData] = getSelectedNode() || [];
+    if (!selectedNodeElement) return;
+
+    const connectedNodes = await getConnectedNodesList(nodeData, 5); // .splice used for limit => .splice(start, stop)
+    if (!connectedNodes) return;
+
+    navigateSimilarNodes(nodeData, connectedNodes);
+});
+document.getElementById("prev-node-btn").addEventListener("click", () => {
+    console.log("PREVIOUS");
 });
