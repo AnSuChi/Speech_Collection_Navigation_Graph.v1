@@ -1,4 +1,5 @@
 // Cache reset --> cmd+shift+R
+let currentNodeIndex = 0;
 
 // !-- fetch JSON data (nodes & links --!
 async function fetchJsonData() {
@@ -18,6 +19,52 @@ async function getAllData() {
 
     return data;
 };
+
+
+// !-- track selected nodes --!
+const trackSelectedNodes = (() => {
+    let prevNodesList = [];
+    let prevElementsList = [];
+    let indexHistory = 1;
+    let minListSize = 1;
+    //let maxListSize = 5;
+
+    return {
+        addNode: (nodeData, addToListIsTrue) => {
+            if (addToListIsTrue) {
+                prevNodesList.push(nodeData);
+                //if (prevNodesList.length > maxListSize) prevNodesList.shift(); // size limit implementation 
+                indexHistory = 1;
+            };
+        },
+        addNodeElement: (nodeElement, addToListIsTrue) => {
+            if (addToListIsTrue) {
+                prevElementsList.push(nodeElement);
+                //if (prevElementsList.length > maxListSize) prevElementsList.shift();
+            };
+        },
+        getPrevNode: () => {
+            if (prevNodesList.length >= minListSize && indexHistory <= prevNodesList.length) {
+                if (indexHistory < prevNodesList.length) {
+                    indexHistory++;
+                };
+                let node = prevNodesList[prevNodesList.length - indexHistory];
+                return node;
+            }
+            return null;
+        },
+        getPrevNodeElement: () => {
+            if (prevElementsList.length >= minListSize && indexHistory <= prevNodesList.length) {
+                let nodeElement = prevElementsList[prevElementsList.length - indexHistory];
+                return nodeElement;
+            }
+            return null;
+        },
+        getAllNodes: () => prevNodesList,
+        getAllElements: () => prevElementsList,
+    };
+})();
+
 
 
 // !-- create the graph --!
@@ -94,7 +141,10 @@ async function loadGraph() {
     });
 
     // event listeners for nodes
-    nodes.on("click", selectNode);
+    nodes.on("click", (event, data) => {
+        selectNode(event, data, true);
+    });
+    
 };
 
 
@@ -118,7 +168,15 @@ function dragEnd(event, data, simulation) {
 
 
 // !-- select functions --!
-function selectNode(event, data) {
+function selectNode(event, data, addToListIsTrue) {
+    const secondaryControllerElement = document.getElementById("secondary-traversal-controller");
+    if (secondaryControllerElement.dataset.displayController !== "true") {
+        secondaryControllerElement.dataset.displayController = "true";
+    };
+    
+    trackSelectedNodes.addNode(data, addToListIsTrue);
+    trackSelectedNodes.addNodeElement(event.currentTarget, addToListIsTrue)
+
     // reset all nodes
     d3.selectAll("g").attr("data-selected", null)
         .select("circle")
@@ -164,7 +222,7 @@ function selectRandomNode() {
     } while (!data);
 
     // call selectedNode
-    selectNode({ currentTarget: randomNode.node() }, data);
+    selectNode({ currentTarget: randomNode.node() }, data, true);
 };
 
 // returns an array containing currently selected node and its data: [selectedNode, data]
@@ -177,11 +235,11 @@ function getSelectedNode() {
     return [selectedNode, data];
 };
 
-// removes data-selected attribute
+// removes data-selected attribute on the "node" html-element
 function unselectNode(node) {
     node.attr("data-selected", null);
 };
-// adds data-selected attribute
+// adds data-selected attribute, using the html-element
 function setSelectedNode(node) {
     d3.select(node.element).attr("data-selected", "true");
 };
@@ -235,7 +293,7 @@ function selectNearestNode(direction) {
 
     unselectNode(selectedNode);
     setSelectedNode(nearestNode.element);
-    selectNode({ currentTarget: nearestNode.element }, nearestNode.data);
+    selectNode({ currentTarget: nearestNode.element }, nearestNode.data, true);
 };
 
 
@@ -253,9 +311,8 @@ async function getConnectedNodesList(nodeData, listLimit) {
     let data = await getAllData();
     if (!data) return [];
 
-    // TODO 1 - OK: sort array by largest value first
-    // TODO 2 - OK: limit array to a size of 5, since only top 5 are relevant
-    // TODO 3 - OK: if none of the connected lines have a wight >= 0.5, then accept weight under 0.5 with the largest value again being first (sort)
+    let nodesList = [];
+
     let connectedNodesList = data.lines.filter(line => 
         line.source == nodeData.id || line.target == nodeData.id
     );
@@ -265,23 +322,78 @@ async function getConnectedNodesList(nodeData, listLimit) {
     let strongConnections = connectedNodesList.filter(line => line.weight >= 0.5);
     // list limit: return list w/ "top x" elements IF there are "strong connections" present (weight >= 0.5)
     if (strongConnections.length > 0) {
-        return strongConnections.slice(0, listLimit); // list limit: we want "top x" connections
+        nodesList = strongConnections.slice(0, listLimit); // list limit: we want "top x" connections
+    } else {
+        // Weak connections: IF there are no strong connections, return the "top x" weaker ones
+        let weakConnections = connectedNodesList.filter(line => line.weight < 0.5);
+        nodesList = weakConnections.slice(0, listLimit);
     };
 
-    // Weak connections: IF there are no strong connections, return the "top x" weaker ones
-    let weakConnections = connectedNodesList.filter(line => line.weight < 0.5);
-    console.log(weakConnections);
-    return weakConnections.slice(0, listLimit);
+    let relevantNodes = nodesList.map(edge => 
+        data.nodes.find(node => node.id === (edge.source === nodeData.id ? edge.target : edge.source))
+    );
+
+    return { nodesList, relevantNodes };
 };
 
-function navigateSimilarNodes(selectedNodeData, connectedNodesList){
-    // TODOs:
-    // 1. take selectedNode and connectedNodeList
-    // 2. highlight the line/edge between current selectedNode and the potential "next" node, found in the connectedNodesList
-    // keep track of the previously "nexted" node, every time user clicks "Next" button, the functions moves to the next entry in the connectedNodesList (don't want to force the user to go to next automatically, rather let them choose)
-
+function navigateSimilarNodes(nodesList, relevantNodes){
+    // PROBLEM: undefined that lingers, when selecting a connectionless node, must be fixed.
     console.log("Navigating...");
-    console.log(connectedNodesList);
+    let nextNode = relevantNodes[currentNodeIndex];
+
+    // reset the styling of edges
+    d3.selectAll("line")
+        .style("stroke", "black") 
+
+    let nextEdgeData = nodesList[currentNodeIndex];
+
+    // highlight the line/edge
+    d3.selectAll("line")
+        .filter(d => 
+            (d.source.id === nextEdgeData.source && d.target.id === nextEdgeData.target) || 
+            (d.source.id === nextEdgeData.target && d.target.id === nextEdgeData.source)
+        )
+        .style("stroke", "red")
+
+    currentNodeIndex = (currentNodeIndex + 1) % nodesList.length;
+
+    let similaritySpan = document.getElementById("similarity-score");
+    similaritySpan.textContent = nextEdgeData.weight;
+
+    document.getElementById("confirm-node-btn").addEventListener("click", () => {
+        confirmSelectNode(nextNode);
+        // reset the line/edge
+         d3.selectAll("line")
+            .filter(d => 
+                (d.source.id === nextEdgeData.source && d.target.id === nextEdgeData.target) || 
+                (d.source.id === nextEdgeData.target && d.target.id === nextEdgeData.source)
+            )
+            .style("stroke", "black")
+    }, { once: true });    
+};
+
+function confirmSelectNode(nextNode) {
+    // SHOULD ONLY RUNS ONCE CONFIRM BUTTON IS CLICKED!
+    console.log("Confirming... next node:");
+    let selectedNodeElement = d3.select("g[data-selected='true']"); // OWN
+
+
+    // get all nodes
+    let nodes = d3.selectAll("g").nodes() //OWN
+        .map(node => ({
+            element: node,
+            data: d3.select(node).datum()
+        }))
+        .filter(node => node.data);
+    if (nodes.length === 0) return;
+
+    // find the node that matches nextNode data
+    let matchingNode = nodes.find(node => node.data.id == nextNode.id);
+    if (!matchingNode) return;
+
+    unselectNode(selectedNodeElement);
+    setSelectedNode(matchingNode.element);
+    selectNode({ currentTarget: matchingNode.element }, matchingNode.data, true);
 };
 
 
@@ -309,18 +421,24 @@ document.getElementById("selectNearestNodeLeft-btn").addEventListener("click", (
 });
 
 document.getElementById("next-node-btn").addEventListener("click", async () => {
-     // user clicks "next button" which activates a function, the function should:
-    // TODOs:
-    // 1. get the current selected node (element & data)
-    // 2. get the relevant list using the getConnectedNodesList() function and pass the data to navigateSimilarNodes() function
     let [selectedNodeElement, nodeData] = getSelectedNode() || [];
     if (!selectedNodeElement) return;
 
-    const connectedNodes = await getConnectedNodesList(nodeData, 5); // .splice used for limit => .splice(start, stop)
-    if (!connectedNodes) return;
+    let { nodesList, relevantNodes } = await getConnectedNodesList(nodeData, 5); // .splice used for limit => .splice(start, stop)
+    if (nodesList.length === 0 && relevantNodes.length === 0) return;
 
-    navigateSimilarNodes(nodeData, connectedNodes);
+    navigateSimilarNodes(nodesList, relevantNodes);
 });
 document.getElementById("prev-node-btn").addEventListener("click", () => {
     console.log("PREVIOUS");
+
+    let prevNode = trackSelectedNodes.getPrevNode();
+    let prevNodeElement = trackSelectedNodes.getPrevNodeElement();
+    if (!prevNode || ! prevNodeElement) return;
+
+    let selectedNodeElement = d3.select("g[data-selected='true']"); // OWN
+
+    unselectNode(selectedNodeElement);
+    setSelectedNode(prevNodeElement);
+    selectNode({ currentTarget: prevNodeElement }, prevNode, false);
 });

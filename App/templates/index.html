@@ -12,16 +12,34 @@
             <div id="node-details-container">
                 <div id="node-info-container">
                     <h2 id="node-title"></h2>
-                    <h3 id="node-speaker">Click a node to view details</h3>
+                    <h3 id="node-speaker">Click on a talk to view details</h3>
                 </div>
-                <div id="secondary-traversal-controller">
-                    <h3>Explore connected talks</h3>
-                    <div class="">
+                <div id="secondary-traversal-controller" data-display-controller="false">
+                    <div style="padding: 2rem 1.5rem 3rem 1.5rem;">
+                        <h3>Explore connected talks</h3>
+                        <div class="">
+                            <div>
+                                <span class="bold-txt underline">What to do?</span><br>
+                                <ul>
+                                    <li>Find a similar talk (see similarity score below)</li>
+                                </ul>
+                            </div><br>
+                            <button id="next-node-btn">
+                                Find similar talk
+                            </button>
+                            <button id="confirm-node-btn">
+                                Go to talk
+                            </button>
+                        </div><br>
+                        <div>
+                            <div class="bold-txt">
+                                Similarity score: <span id="similarity-score">0</span>
+                            </div>
+                            <br>(0 = No similarity)
+                            <br>(1 = Complete similarity)
+                        </div><br><hr><br>
                         <button id="prev-node-btn">
-                            Previous
-                        </button>
-                        <button id="next-node-btn">
-                            Next
+                            Back to previous talk
                         </button>
                     </div>
                 </div>
@@ -38,7 +56,7 @@
             <div id="main-traversal-controller">
                 <div>
                     <h3>Explore the collection</h3>
-                    <button id="selectRandNode-btn">Select random node</button> <br>
+                    <button id="selectRandNode-btn">Select random talk</button> <br>
                 </div>
                 <div class="traversalBtns-container">
                     <button id="selectNearestNodeUp-btn" class="NodeUp-btn">

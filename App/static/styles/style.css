@@ -44,6 +44,7 @@ h1 {
     min-height: 70vh;
     width: 550px;
     margin: 2rem 0rem 0rem 0rem;
+    position: relative;
 }
 
 #graph-controller, #main-traversal-controller {
@@ -66,9 +67,6 @@ h1 {
     padding-left: 2rem;
 }
 
-#graph-controller {
-
-}
 #graph-controller, #main-traversal-controller {
     border-radius: 20px;
 }
@@ -127,16 +125,31 @@ h1 {
 
 #secondary-traversal-controller {
     background-color: #6767f5;
-    position: relative;
-    top: 40%;
+    text-align: left;
+    position: absolute;
+    width: 100%;
+    bottom: 0%;
 }
-#secondary-traversal-controller .traversalBtns-container {
-    max-width: 120px;
+#secondary-traversal-controller h3{
+    text-align: center;
+    margin: 0;
+    padding: 0 0 2rem 0;
 }
 #node-info-container {
-    position: relative;
-    top: 20%;
+    padding: 4rem 0 0 0;
 }
 #node-speaker {
     margin: 2rem 0rem 2rem 0rem;
+}
+
+
+.bold-txt{
+    font-weight: bold;
+}
+.underline{
+    border-bottom: 2px solid var(--white);
+}
+
+div[data-display-controller="false"] {
+    display: none;
 }
