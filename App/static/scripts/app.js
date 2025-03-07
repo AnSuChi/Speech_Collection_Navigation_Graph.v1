@@ -27,20 +27,17 @@ const trackSelectedNodes = (() => {
     let prevElementsList = [];
     let indexHistory = 1;
     let minListSize = 1;
-    //let maxListSize = 5;
 
     return {
         addNode: (nodeData, addToListIsTrue) => {
             if (addToListIsTrue) {
                 prevNodesList.push(nodeData);
-                //if (prevNodesList.length > maxListSize) prevNodesList.shift(); // size limit implementation 
                 indexHistory = 1;
             };
         },
         addNodeElement: (nodeElement, addToListIsTrue) => {
             if (addToListIsTrue) {
                 prevElementsList.push(nodeElement);
-                //if (prevElementsList.length > maxListSize) prevElementsList.shift();
             };
         },
         getPrevNode: () => {
@@ -267,13 +264,7 @@ function selectNearestNode(direction) {
         if (direction === "right") return node.data.x > currentX;
     });
     if (filteredNodes.length === 0) return;
-
-    // finding the node with the shortest Euclidean distance to the current node
-    //let nearestNode = filteredNodes.reduce((prev, curr) => {
-        //let prevDist = Math.sqrt(Math.pow(prev.data.x - currentX, 2) + Math.pow(prev.data.y - currentY, 2));
-        //let currDist = Math.sqrt(Math.pow(curr.data.x - currentX, 2) + Math.pow(curr.data.y - currentY, 2));
-        //return currDist < prevDist ? curr : prev;
-    //});
+    
 
     let nearestNode = filteredNodes.sort((a, b) => {
         if (direction === "right" || direction === "left") {
