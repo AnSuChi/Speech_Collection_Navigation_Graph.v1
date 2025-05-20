@@ -1,0 +1,88 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "identifier": "AbhaDawesar_2013G",
+            "title": "Life in the \"digital now",
+            "speaker": "Abha Dawesar",
+            "topic": "Flow"
+        },
+        {
+            "id": 1,
+            "identifier": "AaronKoblin_2011",
+            "title": "Artfully visualizing our humanity",
+            "speaker": "Aaron Koblin",
+            "topic": "Computer Science"
+        },
+        {
+            "id": 2,
+            "identifier": "AbigailMarsh_2016T",
+            "title": "Why some people are more altruistic than others",
+            "speaker": "Abigail Marsh",
+            "topic": "Compassion"
+        },
+        {
+            "id": 3,
+            "identifier": "AalaElKhani_2016X",
+            "title": "What it's like to be a parent in a war zone",
+            "speaker": "Aala El-Khani",
+            "topic": "Family"
+        },
+        {
+            "id": 4,
+            "identifier": "911Mothers_2010W",
+            "title": "The mothers who found forgiveness, friendship",
+            "speaker": "9/11 healing",
+            "topic": "Terrorism"
+        },
+        {
+            "id": 5,
+            "identifier": "AaronOConnell_2011",
+            "title": "Making sense of a visible quantum object",
+            "speaker": "Aaron O'Connell",
+            "topic": "Quantum Theory"
+        },
+        {
+            "id": 6,
+            "identifier": "AbrahamVerghese_2011G",
+            "title": "A doctor's touch",
+            "speaker": "Abraham Verghese",
+            "topic": "Health Care"
+        },
+        {
+            "id": 7,
+            "identifier": "AbeDavis_2015",
+            "title": "New video technology that reveals an object's hidden properties",
+            "speaker": "Abe Davis",
+            "topic": "Video"
+        },
+        {
+            "id": 8,
+            "identifier": "AchenyoIdachaba_2015W",
+            "title": "How i turned a deadly plant into a thriving business",
+            "speaker": "Achenyo Idachaba",
+            "topic": "Plants"
+        },
+        {
+            "id": 9,
+            "identifier": "AaronHuey_2010X",
+            "title": "America's native prisoners of war",
+            "speaker": "Aaron Huey",
+            "topic": "War"
+        },
+        {
+            "id": 10,
+            "identifier": "AbigailWashburn_2012U",
+            "title": "Building us-china relations ... by banjo",
+            "speaker": "Abigail Washburn",
+            "topic": "China"
+        },
+        {
+            "id": 11,
+            "identifier": "AdamDavidson_2012S",
+            "title": "What we learned from teetering on the fiscal cliff",
+            "speaker": "Adam Davidson",
+            "topic": "Economy"
+        }
+    ]
+}

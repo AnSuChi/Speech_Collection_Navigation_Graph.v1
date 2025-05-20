@@ -1,0 +1,19 @@
+{
+    "edges": [
+        {
+            "source": 0,
+            "target": 1,
+            "weight": 0.535
+        },
+        {
+            "source": 2,
+            "target": 3,
+            "weight": 0.518
+        },
+        {
+            "source": 4,
+            "target": 3,
+            "weight": 0.516
+        }
+    ]
+}
